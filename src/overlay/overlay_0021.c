@@ -3,8 +3,14 @@
 
 // Rewritten parent forme handler to replace our stolen code
 __attribute__((section(".shellosHandler"), target("thumb"), used))
-void shellosHandler(DayCareParents* dayCareParents, void* eggPkm) {
-    //TODO
+void shellosHandler(DayCareParents* dayCareParents, EggPkm* eggPkm) {
+    // Fetch the appropriate parent's species
+    PartyPkm* parent = checkSecondPokemonDitto2(dayCareParents);
+    unsigned int species = PartyPokemon_GetParam(parent, 5, NULL);
+
+    // Inherit forme of the parent if Pokemon is not Rotom
+    if (species != 479)
+        eggPkm->Forme = PartyPokemon_GetParam(parent, 0x6F, NULL);
 }
 
 // Overwritten parent form inheritor function (donor code)
