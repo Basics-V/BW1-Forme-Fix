@@ -21,7 +21,7 @@ void basculinHandler(PartyPkm* wildPkm, unsigned int forme) {
 }
 
 // Hook our forme fix function
-__attribute__((naked, section(".FieldEncount_CreateWildPkm_0x3a"), target("thumb")))
+__attribute__((naked, section(".FieldEncount_CreateWildPkm_0x3a"), target("thumb"), aligned(2)))
 void FieldEncount_CreateWildPkm_0x3a(void) {
     __asm__ volatile (
         ".thumb\n\t"
@@ -33,7 +33,7 @@ void FieldEncount_CreateWildPkm_0x3a(void) {
 }
 
 // NOP the unused breeding calls
-__attribute__((naked, section(".breeding_0x5c"), target("thumb")))
+__attribute__((naked, section(".breeding_0x5c"), target("thumb"), aligned(2)))
 void breeding_0x5c(void) {
     __asm__ volatile (
         ".thumb\n\t"

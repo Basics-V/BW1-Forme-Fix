@@ -7,7 +7,7 @@ typedef struct PartyPkm       PartyPkm;
 // Hardcoded addresses
 #define ADDR_PartyPokemon_GetParam     0x2017E1D
 #define ADDR_PokeParty_ChangeForme     0x2017989
-#define ADDR_PokeParty_SetDefaultMoves 0x201D005
+#define ADDR_PokeParty_SetDefaultMoves 0x2017FA8
 
 // Inline assembly to match addresses w/ symbols
 __asm__(
