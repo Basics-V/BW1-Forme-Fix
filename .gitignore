@@ -1,0 +1,10 @@
+# Build files
+build/
+
+# Development files
+testing/
+venv/
+__pycache__/
+
+# macOS
+.DS_Store
