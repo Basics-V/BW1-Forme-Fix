@@ -5,6 +5,10 @@ build/
 testing/
 venv/
 __pycache__/
+test*.sh
 
 # macOS
 .DS_Store
+
+# Game files
+*.nds

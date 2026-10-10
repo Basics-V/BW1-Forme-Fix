@@ -1,0 +1,36 @@
+Segments:
+  - ID: 0x0
+    Name: ARM9
+    Type: EXECUTABLE
+  - ID: 0x1
+    Name: OVL_21
+    Type: EXECUTABLE
+
+Symbols:
+  - Name: bwInjectBootCode
+    Segment: 0x0
+    Address: 0x200400D
+  - Name: main
+    Segment: 0x0
+    Address: 0x2005125
+  - Name: GFLAppInit
+    Segment: 0x0
+    Address: 0x200545D
+  - Name: PokeParty_ChangeForme
+    Segment: 0x0
+    Address: 0x2017989
+  - Name: PokeParty_SetDefaultMoves
+    Segment: 0x0
+    Address: 0x2017FA9
+  - Name: sys_load_overlay
+    Segment: 0x0
+    Address: 0x2079264
+  - Name: g_OvlMax
+    Segment: 0x0
+    Address: 0x2078EA8
+  - Name: GetUserMemRegionDefaultStart
+    Segment: 0x0
+    Address: 0x2086694
+  - Name: FieldEncount_CreateWildPkm
+    Segment: 0x1
+    Address: 0x21A96B9

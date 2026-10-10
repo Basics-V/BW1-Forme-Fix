@@ -1,0 +1,12 @@
+[
+    {
+        "Id": 237,
+        "RamAddress": 35732768,
+        "RamSize": 32768,
+        "BssSize": 0,
+        "StaticInitializerStartAddress": 35732768,
+        "StaticInitializerEndAddress": 35732768,
+        "compressed_hashed_size": 0,
+        "Flag": 2
+    }
+]
