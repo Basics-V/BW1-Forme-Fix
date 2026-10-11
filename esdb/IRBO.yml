@@ -31,6 +31,9 @@ Symbols:
   - Name: GetUserMemRegionDefaultStart
     Segment: 0x0
     Address: 0x2086694
+  - Name: vsnprintf
+    Segment: 0x0
+    Address: 0x20944CC
   - Name: FieldEncount_CreateWildPkm
     Segment: 0x1
     Address: 0x21A96B9

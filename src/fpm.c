@@ -2,6 +2,7 @@
 // Authors: MCMi460
 
 #include "arm9.h"
+#include "util.h"
 
 __attribute__((target("thumb")))
 void HandleFormeUpdate(PartyPkm* wildPkm, unsigned int forme) {

@@ -10,7 +10,7 @@ void FULL_COPY_bwInjectBootCode(void) {
         "BL GFLAppInit\n\t"
         "MOVS R0, #0\n\t"
         "LDR R1, OVL_237\n\t"
-        "BLX sys_load_overlay\n\t"
+        "BL sys_load_overlay\n\t"
         "POP {PC}\n\t"
 
         "OVL_237: .word 237\n\t"

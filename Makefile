@@ -24,10 +24,10 @@ hdrs = $(wildcard $(incl_dir)/*.h) $(wildcard $(incl_dir)/overlay/*.h)
 esdb = $(pmc_dir)/$(ROM_CODE).yml
 y9   = $(data_dir)/y9.json
 
-fsrcs = $(wildcard $(fpm_dir)/*.c)
-fobjs = $(addprefix $(code_dir)/, $(notdir $(fsrcs:.c=.o)))
-felfs = $(fobjs:.o=.elf)
-fsyms = $(fobjs:.o=.sym)
+fsrcs = $(wildcard $(fpm_dir)/*.c) $(wildcard $(fpm_dir)/*.cpp)
+fobjs = $(addprefix $(code_dir)/, $(notdir $(patsubst %.cpp, %.o, $(patsubst %.c, %.o, $(fsrcs)))))
+felf  = $(code_dir)/fpm.elf
+fsym  = $(felf:.elf=.sym)
 
 fpm_ld = $(linker_dir)/fpm.ld
 
@@ -47,6 +47,7 @@ objcopy = arm-none-eabi-objcopy
 objdump = arm-none-eabi-objdump
 python  = python3
 vpython = $(venv_dir)/bin/$(python)
+ntrpck  = nitropacker
 
 y9_tool   := $(tools_dir)/y9.py
 nitro_y9  := $(tools_dir)/nitro_y9.py
@@ -59,19 +60,20 @@ c_flags  := -mthumb -march=armv5t -nostdlib -ffunction-sections -O2 $(addprefix 
 ld_flags := 
 as_flags := 
 
-vpath %.c $(vfs_dir)
-vpath %.c $(ovl_dir)
-vpath %.c $(fpm_dir)
+vpath %.c   $(vfs_dir)
+vpath %.c   $(ovl_dir)
+vpath %.c   $(fpm_dir)
+vpath %.cpp $(fpm_dir)
 
 all: unpack $(target) repack clean_pack
 
 unpack:
 	@ echo "[<] Unpacking $(source)..."
-	@ nitropacker unpack -r $(source) -o $(unpack_dir)/ -p $(ROM_CODE) -d
+	@ $(ntrpck) unpack -r $(source) -o $(unpack_dir)/ -p $(ROM_CODE) -d
 
 repack:
 	@ echo "[>] Packing $(target)..."
-	@ nitropacker pack -r $(target) -p $(nitro_project) -c
+	@ $(ntrpck) pack -r $(target) -p $(nitro_project) -c
 
 clean_pack:
 	@ echo "[-] Cleaning up $(unpack_dir)..."
@@ -98,17 +100,17 @@ $(link_dir)/hooks.ld: $(hdrs) $(venv_dir) merge_y9s
 		symb=$$(echo $$sym_ctx | cut -d " " -f1); \
 		addr=$$(echo $$sym_ctx | cut -d " " -f2); \
 		echo "	. = $$(( addr & -2 ));" >> $@; \
-		echo "	.text.$$symb : { KEEP(*(.text.$$symb)) }" >> $@; \
+		echo "	.text.$$symb ALIGN(2) : { KEEP(*(.text.$$symb)) }" >> $@; \
 	done
 	@ echo "  /DISCARD/ : { *(.comment) *(.ARM.attributes) *(.note*) }" >> $@
 	@ echo "}" >> $@
 
-$(target): $(y9) $(felfs) $(elfs) $(venv_dir)
+$(target): $(y9) $(felf) $(elfs) $(venv_dir)
 	@ mkdir -p $(dir $@)
 
-$(obj_dir)/%.elf: $(obj_dir)/%.o $(lnks) $(obj_dir)/symbols.o $(fsyms)
+$(obj_dir)/%.elf: $(obj_dir)/%.o $(lnks) $(obj_dir)/symbols.o $(fsym)
 	@ echo "[-] Linking hook $<..."
-	@ $(ld) $(ld_flags) -T $(link_dir)/hooks.ld $< $(obj_dir)/symbols.o -o $@ $(addprefix -R, $(fsyms))
+	@ $(ld) $(ld_flags) -T $(link_dir)/hooks.ld $< $(obj_dir)/symbols.o -o $@ $(addprefix -R, $(fsym))
 
 	@ if [ -n "$(obj_hooks)" ]; then \
 		echo "[&] Patching $<..."; \
@@ -136,22 +138,27 @@ $(obj_dir)/%.o: %.c $(hdrs)
 	@ $(gcc) $(c_flags) -c $< -o $@
 	@ $(eval obj_hooks := $(shell grep -E -o '$(prefix_regex)' $< | sort -u))
 
-$(obj_dir)/symbols.o:
+$(obj_dir)/symbols.o: $(esdb)
 	@ echo "[?] Assembling symbol file..."
 	@ mkdir -p $(@D)
 	@ $(vpython) $(esdb_tool) $(esdb) > $(obj_dir)/symbols.s
 	@ $(as) $(as_flags) $(obj_dir)/symbols.s -o $@
 
-$(code_dir)/%.sym: $(code_dir)/%.elf
+$(fsym): $(felf)
 	@ $(objcopy) --extract-symbol $< $@
 
-$(code_dir)/%.elf: $(code_dir)/%.o $(lnks) $(obj_dir)/symbols.o
-	@ echo "[-] Linking $<..."
+$(felf): $(fobjs) $(lnks) $(obj_dir)/symbols.o
+	@ echo "[-] Linking FPM $@..."
 	@ mkdir -p $(@D)
-	@ $(ld) $(ld_flags) -T $(fpm_ld) $< $(obj_dir)/symbols.o -o $@
-	@ $(objcopy) -O binary -j .text $@ $(fpm_bin)
+	@ $(ld) $(ld_flags) -T $(fpm_ld) $(fobjs) $(obj_dir)/symbols.o -o $@
+	@ $(objcopy) -O binary $@ $(fpm_bin)
 
 $(code_dir)/%.o: %.c $(hdrs)
+	@ echo "[+] Compiling $<..."
+	@ mkdir -p $(@D)
+	@ $(gcc) $(c_flags) -c $< -o $@
+
+$(code_dir)/%.o: %.cpp $(hdrs)
 	@ echo "[+] Compiling $<..."
 	@ mkdir -p $(@D)
 	@ $(gcc) $(c_flags) -c $< -o $@

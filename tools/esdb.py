@@ -34,9 +34,11 @@ if __name__ == "__main__":
             data = yaml.safe_load(file)
         for symbol in data["Symbols"]:
             print(".global %s" % symbol["Name"])
+            print(".type {}, %function".format(symbol["Name"]))
             if symbol["Address"] & 1:
-                print(".type {}, %function".format(symbol["Name"]))
-                print(".thumb_func")
+                print(".code 16")
+            else:
+                print(".code 32")
             print("%s = 0x%X" % (symbol["Name"], symbol["Address"]))
             print()
         quit()
