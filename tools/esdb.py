@@ -1,3 +1,6 @@
+# esdb.py
+# Authors: MCMi460
+
 import sys
 import yaml
 import json
@@ -18,11 +21,14 @@ def trim_prefix(symbol:str):
     return symbol
 
 def normalize_segment(segment:str):
-    segment = segment.replace(".c", "")
-    if segment.startswith("main_"):
-        segment = "OVL_%d" % int(segment.split("_")[-1], 16)
-    if segment.startswith("overlay_"):
-        segment = "OVL_%d" % int(segment.split("_")[-1])
+    if isinstance(segment, str):
+        segment = segment.replace(".c", "")
+        if segment.startswith("main_"):
+            segment = "OVL_%d" % int(segment.split("_")[-1], 16)
+        if segment.startswith("overlay_"):
+            segment = "OVL_%d" % int(segment.split("_")[-1])
+    elif isinstance(segment, int):
+        segment = "OVL_%d" % segment
     return segment.lower()
 
 def match_segment(a:str, b:str):

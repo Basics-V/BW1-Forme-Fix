@@ -1,11 +1,11 @@
 [
     {
         "Id": 237,
-        "RamAddress": 35732768,
-        "RamSize": 32768,
+        "RamAddress": 35732800,
+        "RamSize": %d,
         "BssSize": 0,
-        "StaticInitializerStartAddress": 35732768,
-        "StaticInitializerEndAddress": 35732768,
+        "StaticInitializerStartAddress": 35732800,
+        "StaticInitializerEndAddress": 35732800,
         "compressed_hashed_size": 0,
         "Flag": 2
     }
