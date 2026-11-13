@@ -5,6 +5,9 @@ Segments:
   - ID: 0x1
     Name: OVL_21
     Type: EXECUTABLE
+  - ID: 0x2
+    Name: OVL_195
+    Type: EXECUTABLE
 
 Symbols:
   - Name: bwInjectBootCode
@@ -16,12 +19,18 @@ Symbols:
   - Name: GFLAppInit
     Segment: 0x0
     Address: 0x200545D
+  - Name: setChangedPkmSpecies
+    Segment: 0x0
+    Address: 0x20178D9
   - Name: PokeParty_ChangeForme
     Segment: 0x0
     Address: 0x2017989
   - Name: PokeParty_SetDefaultMoves
     Segment: 0x0
     Address: 0x2017FA9
+  - Name: PML_PersonalGetParamSingle
+    Segment: 0x0
+    Address: 0x2019C91
   - Name: sys_load_overlay
     Segment: 0x0
     Address: 0x2079264
@@ -37,3 +46,9 @@ Symbols:
   - Name: FieldEncount_CreateWildPkm
     Segment: 0x1
     Address: 0x21A96B9
+  - Name: EvolutionProcUpdate
+    Segment: 0x2
+    Address: 0x22040E1
+  - Name: EvolutionDisplayLoad
+    Segment: 0x2
+    Address: 0x2205C75
